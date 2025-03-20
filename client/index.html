@@ -1,0 +1,30 @@
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Argument Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Argument Bot</h1>
+
+    <form id="uploadForm">
+        <label for="fileInput">Upload een document</label>
+        <input type="file" id="fileInput" required>
+        <button type="submit">Upload Document</button>
+    </form>
+
+    <form id="chatForm">
+        <label for="chatfield">Geef een argument</label>
+        <input type="text" id="Argument" placeholder="Typ hier je argument..." required>
+        <button id="submitBtn" type="submit">Verstuur</button>
+        <button id="cancelBtn" type="button">Annuleren</button>
+    </form>
+
+    <div id="chatHistory"></div>
+    <div id="response"></div>
+    <div id="error"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

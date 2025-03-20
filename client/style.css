@@ -1,0 +1,90 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#response {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #e0e0e0;
+    border-radius: 8px;
+}
+
+button[type="submit"][disabled] {
+    background-color: red; /* Lichtere achtergrondkleur */
+    color: #666; /* Lichtere tekstkleur */
+    cursor: not-allowed; /* Cursorstijl die aangeeft dat de knop niet klikbaar is */
+}
+button#cancelBtn {
+    background-color: #f44336; /* Rode achtergrondkleur */
+    color: white; /* Witte tekstkleur */
+    padding: 10px 20px; /* Gepaste padding */
+    border: none; /* Geen rand */
+    border-radius: 4px; /* Afronding van hoeken */
+    cursor: pointer; /* Aanwijzer bij hover */
+}
+
+button#cancelBtn:hover {
+    background-color: #d32f2f; /* Donkerder rode achtergrondkleur bij hover */
+}
+
+#chatHistory {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Scrollbar toevoegen als de chatgeschiedenis te lang wordt */
+    max-height: 300px; /* Maximale hoogte van de chatgeschiedenis om scrollen te beperken */
+}
+
+#chatHistory div {
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+}
+

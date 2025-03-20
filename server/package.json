@@ -1,0 +1,28 @@
+{
+  "type": "module",
+  "name": "server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --env-file=.env server.js",
+    "dev": "nodemon --env-file=.env server.js"
+  },
+  "keywords": [],
+  "author": "dolores9",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "description": "chatbot",
+  "dependencies": {
+    "@langchain/community": "^0.3.36",
+    "@langchain/core": "^0.3.42",
+    "@langchain/openai": "^0.4.5",
+    "@langchain/textsplitters": "^0.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "faiss-node": "^0.5.1",
+    "langchain": "^0.3.19"
+  }
+}
