@@ -1,7 +1,8 @@
 import express from 'express'
 import cors from 'cors'
 import { ChatOpenAI } from "@langchain/openai";
-import { loadVectorStore } from "./vector.js";
+import { loadVectorStore } from './vector';
+
 
 const model = new ChatOpenAI({
   temperature: 0.3,
@@ -11,11 +12,13 @@ const model = new ChatOpenAI({
   azureOpenAIApiDeploymentName: process.env.ENGINE_NAME,
 })
 
-const app = express()
+const app = express();
+createVectorstore(); // Initialize the vector store
 const port = 3000;
 const chatHistory = [];
 
-let vectorStore = await loadVectorStore()
+
+console.log(vectorStore);
 
 app.use(cors());
 app.use(express.json());
@@ -62,5 +65,3 @@ app.post("/api/ask", async (req, res) => {
 app.listen(port, () => {
   console.log("De server draait op http:${port}");
 });
-
-

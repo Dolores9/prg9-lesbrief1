@@ -38,9 +38,14 @@ export async function loadVectorStore() {
   vectorStore = await FaissStore.load("vectordatabase", embeddings);
 }
 
+export async function loadVectorStore() {
+  vectorStore = await FaissStore.load("vectordatabase", embeddings);
+  return vectorStore
+}
 
 // vector store maken en opslaan hoeft maar 1x, daarna kan deze regel uitgecomment worden
 // await createVectorstore()
+await loadVectorStore()
 
 
 
