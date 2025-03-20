@@ -11,7 +11,7 @@ const embeddings = new AzureOpenAIEmbeddings({
     azureOpenAIApiDeploymentName: process.env.DEPLOYMENT_NAME,
   })
 
-let vectorStore
+export let vectorStore
 
 
 // Load and split the text document and save it into vectorstore
@@ -32,10 +32,6 @@ async function createVectorstore() {
     // Create vector store in FAISS and save it to disk so you can load it later
     vectorStore = await FaissStore.fromDocuments(splitDocs, embeddings);
     await vectorStore.save("vectordatabase");
-}
-
-export async function loadVectorStore() {
-  vectorStore = await FaissStore.load("vectordatabase", embeddings);
 }
 
 export async function loadVectorStore() {

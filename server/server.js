@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { ChatOpenAI } from "@langchain/openai";
-import { loadVectorStore } from './vector';
+import { vectorStore } from './vector.js';
 
 
 const model = new ChatOpenAI({
@@ -13,7 +13,6 @@ const model = new ChatOpenAI({
 })
 
 const app = express();
-createVectorstore(); // Initialize the vector store
 const port = 3000;
 const chatHistory = [];
 
