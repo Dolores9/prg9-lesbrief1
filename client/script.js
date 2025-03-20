@@ -10,51 +10,51 @@ const errorElement = document.getElementById("error");
 const responseElement = document.getElementById("response");
 const fileInput = document.getElementById("fileInput");
 
-// chatForm.addEventListener("submit", async (event) => {
-//   event.preventDefault();
-// console.log("werkt");
+chatForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+console.log("werkt");
 
-//   submitBtn.disabled = true; // Voorkomt dubbelklikken
+  submitBtn.disabled = true; // Voorkomt dubbelklikken
 
-//   controller = new AbortController();
-//   const { signal } = controller;
+  controller = new AbortController();
+  const { signal } = controller;
 
-//   const question = document.getElementById("Argument").value.trim();
+  const question = document.getElementById("Argument").value.trim();
 
-//   if (question.length === 0) {
-//     errorElement.innerText = "Voer ten minste één argument in.";
-//     submitBtn.disabled = false;
-//     return;
-//   }
+  if (question.length === 0) {
+    errorElement.innerText = "Voer ten minste één argument in.";
+    submitBtn.disabled = false;
+    return;
+  }
 
-//   try {
-//     const response = await fetch("http://localhost:3000/api/ask", {
-//       mode: "cors",
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({ prompt: question.value }),
-//       //todo file
-//       signal,
-//     });
+  try {
+    const response = await fetch("http://localhost:3000/api/ask", {
+      mode: "cors",
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt: question.value }),
+      //todo file
+      signal,
+    });
 
-//     if (!response.ok) {
-//       throw new Error("HTTP-fout: ${response.status}");
-//     }
+    if (!response.ok) {
+      throw new Error("HTTP-fout: ${response.status}");
+    }
 
-//     const data = await response.json();
+    const data = await response.json();
 
-//     chatHistory.push(data.content);
-//     localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    chatHistory.push(data.content);
+    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
 
-//     updateChatHistory();
-//     responseElement.innerText = data.content;
-//   } catch (error) {
-//     console.error("Er is een fout opgetreden:", error);
-//     errorElement.innerText = error.message;
-//   } finally {
-//     submitBtn.disabled = false;
-//   }
-// });
+    updateChatHistory();
+    responseElement.innerText = data.content;
+  } catch (error) {
+    console.error("Er is een fout opgetreden:", error);
+    errorElement.innerText = error.message;
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
 
 const updateChatHistory = () => {
   chatHistoryElement.innerHTML = "";

@@ -19,7 +19,7 @@ export let vectorStore
 async function createVectorstore() {
 
     console.log("Loading document...");
-    const loader = new TextLoader("myfile.txt");
+    const loader = new TextLoader("./public/myfile.txt");
     const docs = await loader.load();
     const textSplitter = new RecursiveCharacterTextSplitter({
         chunkSize: 1000,
