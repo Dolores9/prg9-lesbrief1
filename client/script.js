@@ -18,7 +18,7 @@ console.log("werkt");
   controller = new AbortController();
   const { signal } = controller;
 
-  const question = document.getElementById("Argument").value.trim();
+  const question = document.getElementById("Question").value.trim();
 
   if (question.length === 0) {
     errorElement.innerText = "Voer ten minste één vraag in.";
@@ -31,7 +31,7 @@ console.log("werkt");
       mode: "cors",
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt: question.value }),
+      body: JSON.stringify({ question }),
       signal,
     });
 
