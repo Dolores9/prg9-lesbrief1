@@ -2,7 +2,6 @@ let controller;
 let chatHistory = [];
 
 const chatForm = document.getElementById("chatForm");
-const uploadForm = document.getElementById("uploadForm");
 const submitBtn = document.getElementById("submitBtn");
 const cancelBtn = document.getElementById("cancelBtn");
 const chatHistoryElement = document.getElementById("chatHistory");
@@ -22,7 +21,7 @@ console.log("werkt");
   const question = document.getElementById("Argument").value.trim();
 
   if (question.length === 0) {
-    errorElement.innerText = "Voer ten minste één argument in.";
+    errorElement.innerText = "Voer ten minste één vraag in.";
     submitBtn.disabled = false;
     return;
   }
@@ -33,7 +32,6 @@ console.log("werkt");
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt: question.value }),
-      //todo file
       signal,
     });
 

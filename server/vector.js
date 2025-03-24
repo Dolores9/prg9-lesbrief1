@@ -1,17 +1,14 @@
-import { AzureOpenAIEmbeddings, OpenAIEmbeddings } from "@langchain/openai";
+import { AzureOpenAIEmbeddings } from "@langchain/openai";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { FaissStore } from "@langchain/community/vectorstores/faiss";
 
 const embeddings = new AzureOpenAIEmbeddings({
-    temperature: 0.9,
-    azureOpenAIApiKey: process.env.AZURE_OPENAI_API_KEY,
-    azureOpenAIApiVersion: process.env.OPENAI_API_VERSION,
-    azureOpenAIApiInstanceName: process.env.INSTANCE_NAME,
-    azureOpenAIApiDeploymentName: process.env.DEPLOYMENT_NAME,
-  })
+    temperature: 0,
+    azureOpenAIApiEmbeddingsDeploymentName: process.env.AZURE_EMBEDDING_DEPLOYMENT_NAME
+});
 
-export let vectorStore
+let vectorStore
 
 
 // Load and split the text document and save it into vectorstore
