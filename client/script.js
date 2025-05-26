@@ -8,12 +8,17 @@ const chatHistoryElement = document.getElementById("chatHistory");
 const errorElement = document.getElementById("error");
 const responseElement = document.getElementById("response");
 const fileInput = document.getElementById("fileInput");
+const weatherForm = document.getElementById("weatherForm");
+const locationInput = document.getElementById("locationInput");
+const weatherQuestionInput = document.getElementById("weatherQuestion");
+const weatherSubmitBtn = document.getElementById("weatherSubmitBtn");
+const weatherResponse = document.getElementById("weatherResponse");
 
 chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 console.log("werkt");
 
-  submitBtn.disabled = true; // Voorkomt dubbelklikken
+  submitBtn.disabled = true; 
 
   controller = new AbortController();
   const { signal } = controller;
@@ -25,7 +30,6 @@ console.log("werkt");
     submitBtn.disabled = false;
     return;
   }
-
   try {
     const response = await fetch("http://localhost:3000/api/ask", {
       mode: "cors",
@@ -51,6 +55,36 @@ console.log("werkt");
     errorElement.innerText = error.message;
   } finally {
     submitBtn.disabled = false;
+  }
+});
+
+weatherForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const location = locationInput.value.trim();
+  const question = weatherQuestionInput.value.trim();
+
+  if (!location) return;
+
+  weatherSubmitBtn.disabled = true;
+  weatherResponse.innerText = "AI denkt na over het weer...";
+
+  try {
+    const res = await fetch("http://localhost:3000/api/weather", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ location, question }),
+    });
+
+    if (!res.ok) throw new Error("Fout bij ophalen van weerdata");
+
+    const data = await res.json();
+    weatherResponse.innerText = data.content;
+  } catch (err) {
+    console.error(err);
+    weatherResponse.innerText = "Er is iets misgegaan.";
+  } finally {
+    weatherSubmitBtn.disabled = false;
   }
 });
 
