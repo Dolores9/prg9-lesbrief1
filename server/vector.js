@@ -12,7 +12,6 @@ let vectorStore
 
 
 // Load and split the text document and save it into vectorstore
-
 async function createVectorstore() {
 
     console.log("Loading document...");
@@ -36,7 +35,7 @@ export async function loadVectorStore() {
   return vectorStore
 }
 
-// vector store maken en opslaan hoeft maar 1x, daarna kan deze regel uitgecomment worden
+// // vector store maken en opslaan hoeft maar 1x, daarna kan deze regel uitgecomment worden
 // await createVectorstore()
 await loadVectorStore()
 
