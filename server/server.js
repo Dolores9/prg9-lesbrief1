@@ -24,34 +24,38 @@ console.log('Test voo GET')
 
 app.post("/api/ask", async (req, res) => {
   try {
-      const { question } = req.body;
+    const { messages } = req.body;
 
-      if (!question) {
-          return res.status(400).json({ error: "No question provided." });
-      }
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: "No messages provided." });
+    }
 
-      console.log("werkt");
+    console.log("Performing similarity search...");
+    const lastUserMessage = messages.filter(m => m.role === "user").slice(-1)[0]?.content || "";
 
-      console.log("Performing similarity search...");
-      const relevantDocs = await vectorStore.similaritySearch(question, 3);
-      const context = relevantDocs.map(doc => doc.pageContent).join("\n\n");
+    const relevantDocs = await vectorStore.similaritySearch(lastUserMessage, 3);
+    const context = relevantDocs.map(doc => doc.pageContent).join("\n\n");
 
-      console.log("🤖 Asking the AI model...");
-      const response = await model.invoke([
-          ["system", "Use the following context to answer the user's question. Only use information from the context."],
-          ["user", `Context: ${context}\n\nQuestion: ${question}`]
-      ]);
+    // Voeg een system prompt toe die de context uitlegt
+    const promptMessages = [
+      { role: "system", content: `Gebruik alleen de volgende context om de vragen te beantwoorden:\n\n${context}` },
+      ...messages
+    ];
 
-      console.log("\nAnswer found:");
-      console.log(response.content);
+    console.log("🤖 Asking the AI model...");
+    const response = await model.invoke(promptMessages);
 
-      res.json({ content: response.content });
+    console.log("\nAnswer found:");
+    console.log(response.content);
+
+    res.json({ content: response.content });
 
   } catch (error) {
-      console.error("Error processing question:");
-      res.status(500).json({ error: "Internal server error." });
+    console.error("Error processing question:", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
+
 
 app.post("/api/weather", async (req, res) => {
   try {
@@ -61,32 +65,38 @@ app.post("/api/weather", async (req, res) => {
       return res.status(400).json({ error: "Locatie ontbreekt." });
     }
 
-    // Je kunt eventueel lat/lon hardcoderen voor demo
-    const latitude = 52.52;
-    const longitude = 13.41;
-    const url = `${process.env.WEATHER_API_URL}&latitude=${latitude}&longitude=${longitude}`;
-    console.log(url);
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1`);
+    const geoData = await geoRes.json();
 
+    if (!geoData.results || geoData.results.length === 0) {
+      return res.status(404).json({ error: "Locatie niet gevonden." });
+    }
 
-    const weatherRes = await fetch(url);
+    const { latitude, longitude, name } = geoData.results[0];
+    console.log(`Locatie gevonden: ${name}`);
+
+    const weatherUrl = `${process.env.WEATHER_API_URL}&latitude=${latitude}&longitude=${longitude}`;
+    const weatherRes = await fetch(weatherUrl);
     const weatherData = await weatherRes.json();
 
-    // Samenvatten van de data als context
-    const weatherContext = `Het maximum van vandaag is ${weatherData.daily.temperature_2m_max[0]}°C. Het huidige uurtemperatuur is ${weatherData.current.temperature_2m}°C.`
+    const weatherContext = `Het maximum van vandaag is ${weatherData.daily.temperature_2m_max[0]}°C. Het huidige uurtemperatuur is ${weatherData.current.temperature_2m}°C.`;
 
     const prompt = [
-      ["system", "Beantwoord de vraag op basis van de volgende weergegevens."],
-      ["user", `Weerdata: ${weatherContext}\nVraag: ${question || "Wat kan ik vandaag verwachten?"}`],
-    ];
+  ["system", "Beantwoord de vraag op basis van de weergegevens. Als tijdstippen worden genoemd (zoals 'vanavond'), probeer dan de relevante delen van de data te gebruiken. Geef een bruikbaar advies."],
+  ["user", `Weerdata: ${weatherContext}\nVraag van gebruiker: ${question || "Wat kan ik vandaag verwachten?"}`],
+];
+
 
     const aiResponse = await model.invoke(prompt);
 
     res.json({ content: aiResponse.content });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Weerdata ophalen of AI-verwerking is mislukt." });
+    res.status(500).json({ error: "Weerdata ophalen mislukt." });
   }
 });
+
 
 app.listen(port, () => {
   console.log(`De server draait op http://localhost:${port}`);
