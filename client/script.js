@@ -1,55 +1,62 @@
 let controller;
-let chatHistory = [];
+let messages = JSON.parse(localStorage.getItem("messages")) || [];
 
 const chatForm = document.getElementById("chatForm");
 const submitBtn = document.getElementById("submitBtn");
-const cancelBtn = document.getElementById("cancelBtn");
 const chatHistoryElement = document.getElementById("chatHistory");
 const errorElement = document.getElementById("error");
 const responseElement = document.getElementById("response");
-const fileInput = document.getElementById("fileInput");
-const weatherForm = document.getElementById("weatherForm");
-const locationInput = document.getElementById("locationInput");
-const weatherQuestionInput = document.getElementById("weatherQuestion");
-const weatherSubmitBtn = document.getElementById("weatherSubmitBtn");
-const weatherResponse = document.getElementById("weatherResponse");
+
+function updateChatHistory() {
+  chatHistoryElement.innerHTML = "";
+  messages.forEach(({ role, content }) => {
+    const p = document.createElement("p");
+    p.className = role === "user" ? "user-message" : role === "assistant" ? "assistant-message" : "system-message";
+    p.textContent = `${role === "user" ? "Vraag" : role === "assistant" ? "Antwoord" : "Systeem"}: ${content}`;
+    chatHistoryElement.appendChild(p);
+  });
+}
 
 chatForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-console.log("werkt");
+  submitBtn.disabled = true;
+  errorElement.innerText = "";
+  responseElement.innerText = "";
 
-  submitBtn.disabled = true; 
+  const questionInput = document.getElementById("Question");
+  const question = questionInput.value.trim();
 
-  controller = new AbortController();
-  const { signal } = controller;
-
-  const question = document.getElementById("Question").value.trim();
-
-  if (question.length === 0) {
+  if (!question) {
     errorElement.innerText = "Voer ten minste één vraag in.";
     submitBtn.disabled = false;
     return;
   }
+
+  // Voeg de vraag toe aan messages met rol 'user'
+  messages.push({ role: "user", content: question });
+  updateChatHistory();
+
   try {
     const response = await fetch("http://localhost:3000/api/ask", {
-      mode: "cors",
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question }),
-      signal,
+      body: JSON.stringify({ messages }),
     });
 
-    if (!response.ok) {
-      throw new Error("HTTP-fout: ${response.status}");
-    }
+    if (!response.ok) throw new Error(`HTTP-fout: ${response.status}`);
 
     const data = await response.json();
 
-    chatHistory.push(data.content);
-    localStorage.setItem("chatHistory", JSON.stringify(chatHistory));
+    // Voeg het antwoord toe aan messages met rol 'assistant'
+    messages.push({ role: "assistant", content: data.content });
+
+    // Sla messages op in localStorage
+    localStorage.setItem("messages", JSON.stringify(messages));
 
     updateChatHistory();
+
     responseElement.innerText = data.content;
+    questionInput.value = "";
   } catch (error) {
     console.error("Er is een fout opgetreden:", error);
     errorElement.innerText = error.message;
@@ -58,14 +65,19 @@ console.log("werkt");
   }
 });
 
+updateChatHistory();
+
 weatherForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  const weatherQuestionInput = document.getElementById("weatherQuestion");
+  
   const location = locationInput.value.trim();
-  const question = weatherQuestionInput.value.trim();
+  const weatherQuestion = weatherQuestionInput.value.trim();
 
   if (!location) return;
 
+  console.log('kaas');
   weatherSubmitBtn.disabled = true;
   weatherResponse.innerText = "AI denkt na over het weer...";
 
@@ -73,7 +85,7 @@ weatherForm.addEventListener("submit", async (e) => {
     const res = await fetch("http://localhost:3000/api/weather", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ location, question }),
+      body: JSON.stringify({ location, weatherQuestion }),
     });
 
     if (!res.ok) throw new Error("Fout bij ophalen van weerdata");
@@ -87,15 +99,6 @@ weatherForm.addEventListener("submit", async (e) => {
     weatherSubmitBtn.disabled = false;
   }
 });
-
-const updateChatHistory = () => {
-  chatHistoryElement.innerHTML = "";
-  chatHistory.forEach((message) => {
-    const messageElement = document.createElement("div");
-    messageElement.textContent = message;
-    chatHistoryElement.appendChild(messageElement);
-  });
-};
 
 const cancelAPICall = () => {
   if (controller) {
