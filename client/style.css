@@ -47,8 +47,8 @@ button[type="submit"]:hover {
 
 #response {
   padding: 5px;
-  border-top: 2px solid #757575;
   margin-top: 5px;
+  display: none;
 }
 
 button[type="submit"][disabled] {
@@ -88,5 +88,26 @@ button#cancelBtn:hover {
 
 #weatherForm {
   height: fit-content;
+}
+
+#siteExplanation {
+  max-width: 400px;
+  margin: 20px 50px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+#siteExplanation h2 {
+  margin-top: 0;
+  color: #4caf50;
+  font-size: 20px;
+}
+
+#siteExplanation p {
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
 
